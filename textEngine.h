@@ -104,7 +104,7 @@ public:
 		}
 		vector<cmdwithline> ins;
 		vector<cmdwithline> del;
-		unsigned int i = 2;
+		nums i = 2;
 		for(auto a = scriptlines.begin() + 1;a != scriptlines.end();++i,++a){
 		//Insert和Delete放到最后面执行 
 		if(getLineType(*a) != 0) 
@@ -147,6 +147,7 @@ public:
 		case 2:{
 			//记得没错的话是CommandWithText?
 			doCommandWithText(getVectorWithText(i),i);
+			a = getIt(scriptlines, i);
 			continue;
 		}
 		case 3:{
@@ -186,7 +187,7 @@ private:
 	bool ifinit = false;//是否加载成功
 	nums slines;//脚本行数 
 	nums flines;//文件行数 
-	nums load = 0;//已加载的……没用了吧喂 
+	nums load = 2;//已加载的……没用了吧喂……果断启用√ 
 	bool written = false;//是否可写 
 	bool debug = false;//IF DEBUG MODE 
 	bool override = false;//是否覆写输出文件
@@ -263,7 +264,8 @@ private:
 	//从vector中读取一行，line为读取的行数，默认为0，按顺序读取(读取记录保存在nums load里)
 	inline aline getaline(vector<aline> file,nums line = 0){
 		if (!line)
-			return file[load++];
+			//return file[load++];
+			return 0;//先不搞这个 
 		else
 			return file[line - 1];
 	}
@@ -445,6 +447,8 @@ doline getTextLines(aline textline){
 					filelines.push_back("");
 				}
 			}
+			DEBUG_PRINT("New line created");
+			DEBUG_PRINT(filelines.size());
 			return 2;
 		}
 		case 3:{
