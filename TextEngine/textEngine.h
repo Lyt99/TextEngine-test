@@ -24,6 +24,8 @@ My First C++ Application
  ~ 好像没有
  ~
  ~ 还有，你tm就不能在标点符号后面加个空格么
+ * ...下次加 
+ * PS:DevC++简直良(keng)心(die) 
 */
 
 using namespace std;
@@ -48,11 +50,16 @@ public:
 
 	//DEBUG FUNCTION
 	// 用大写字母逼格高一点 - mkpoli
+	// 已吓尿 -Lyt99 
 	void setItDebug(){
 		printMessage("DEBUG MODE ON.");
 		debug = true;
 	}
 
+	//加一个是否能够覆写文件的函数
+	void setOverride(bool bo){
+		override = bo;
+	} 
 	//获取当前textEngine的版本
 	string static const getVersion(){
 		return "0.0.1";
@@ -60,7 +67,9 @@ public:
 
 	//构造函数
 	textEngine(string sname) :scriptname(sname){}
-	//析构函数
+	/*析构函数
+	*其实我一直想问这个析构函数没问题？
+	*/ 
 	~textEngine(){
 		if (scriptstream)
 			scriptstream.close();
@@ -160,8 +169,8 @@ public:
 		}
 		case 2:{
 			//记得没错的话是CommandWithText?
-			if(doCommandWithText(getVectorWithText(i),i); != 0)
-				return 1;
+			if(doCommandWithText(getVectorWithText(i),i) != 0)
+			    return 1;
 			a = getIt(scriptlines, i);
 			continue;
 		}
@@ -206,7 +215,7 @@ private:
 	bool ifinit = false;//是否加载成功
 	nums slines;//脚本行数 
 	nums flines;//文件行数 
-	nums load = 2;//已加载的……没用了吧喂……果断启用√ 
+	//nums load = 2;//已加载的……没用了吧喂……果断启用√  <-最后还是没用了 
 	bool written = false;//是否可写 
 	bool debug = false;//IF DEBUG MODE 
 	bool override = false;//是否覆写输出文件
@@ -422,7 +431,7 @@ doline getTextLines(aline textline){
 	//返回值表示执行状态,0为正确执行,1为未成功执行,2为CommandWithText,3为CommandReplace,4为CommandInsert,5为CommandDelete 
 	//没坑完？好像这个函数完成了 
 	int doCommand(nums line,command cmd,text txt){
-		DEBUG_PRINT("Now Transfering");
+		DEBUG_PRINT("Now Working on");
 		DEBUG_PRINT(line);
 		int id = getCommandId(cmd);
 		switch(id){
@@ -588,32 +597,24 @@ doline getTextLines(aline textline){
 	Text 2
 	Text 3
 	*/ 
-	vector<aline> getVectorWithText(nums &line){
-		DEBUG_PRINT(line);
-		DEBUG_PRINT("Get Vector With Text");
+	vector<aline> getVectorWithText(nums &line){//*之前那个坑爹了，推倒重写 
 		vector<aline> vec;
-		DEBUG_PRINT("GetIt");
 		auto it = getIt(scriptlines,line);
-		DEBUG_PRINT(*it);
-		DEBUG_PRINT("Iterator Getted");
 		vec.push_back(*it);
-		DEBUG_PRINT("push_back");
+		++line;
 		++it;
-		while(getCommand(*it) == "Text"){
-			DEBUG_PRINT("while");
+		for(;getCommand(*it) == "Text";++line,++it){
 			vec.push_back(*it);
-			++it;
-			++line;
+			if(it == scriptlines.end() - 1) //杜绝各种未响应 
+				break;
 		}
-		//++line;
-		DEBUG_PRINT(line);
 		return vec;
 	}
 	
 	int replaceString(doline dl, text find, text replacement);
 	/*
-	可能用到的变量或函数 
-	(vector<aline>)flines - 暂存文件修改数据的vector，行数i在其中对应关系为flines[i-1] 
-	getIt(vector<aline> vec,nums line) - 内联函数，获取某vector<aline>中某行对应的迭代器 
+	*可能用到的变量或函数 
+	*(vector<aline>)flines - 暂存文件修改数据的vector，行数i在其中对应关系为flines[i-1] 
+	*getIt(vector<aline> vec,nums line) - 内联函数，获取某vector<aline>中某行对应的迭代器 
     */
 };
