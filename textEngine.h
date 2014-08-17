@@ -13,6 +13,8 @@ My First C++ Application
 目的是用来进行自动化的
 文本处理操作
 话说代码全写头文件里了没问题吧QAQ
+
+~mkpoli： 可惜是个变态
 */
 
 using namespace std;
