@@ -13,8 +13,12 @@ My First C++ Application
 目的是用来进行自动化的
 文本处理操作
 话说代码全写头文件里了没问题吧QAQ
+*/
 
-~mkpoli： 可惜是个变态
+
+/*
+@author Lyt99,mkpoli
+喂有这种写法么 
 */
 
 using namespace std;
@@ -24,11 +28,11 @@ class textEngine
 public:
 	/*
 	需要完成的命令列表
-	File
-	New 
-	Line
-	Empty
-	Text
+	File Done 
+	New Done
+	Line Done
+	Empty Done
+	Text Done
 	
 	底下这些一看就效率拙计留着第二版写
 	算了就都开坑了< < 
@@ -83,8 +87,8 @@ public:
 			DEBUG_PRINT("Load Commandlist");
 			defCommand();//添加命令列表到(map<string,int>)commandlist里 
 			DEBUG_PRINT("Loaded Successful");
-			override = true;
-			if (!setFileWritten(outputstream)) return false;
+			//override = true; //调试用的 
+			if (!canFileWritten()) return false;
 			DEBUG_PRINT("Setted File Written");
 			ifinit = true;//设置init为true，证明已经加载 
 			DEBUG_PRINT("init() return true");
@@ -146,7 +150,8 @@ public:
 		}
 		case 2:{
 			//记得没错的话是CommandWithText?
-			doCommandWithText(getVectorWithText(i),i);
+			if(doCommandWithText(getVectorWithText(i),i); != 0)
+				return 1;
 			a = getIt(scriptlines, i);
 			continue;
 		}
@@ -162,9 +167,13 @@ public:
 			//CommandDelete
 			continue;
 		}
-}
+                     }
 	}
-		writeToFile(outputstream);//写到输出文件
+	    DEBUG_PRINT("writeToFile");
+	    //写到输出文件并返回值 
+		DEBUG_PRINT(writeToFile(outputstream) ? 0 : 1);
+		return 0;
+	
 }
 private:
 	//typedef区
@@ -298,7 +307,7 @@ private:
 
 	//设置文件可写，为改写文件做准备
 	//开始坑了 
-	bool setFileWritten(ofstream &stream){
+	bool canFileWritten(){
 		ifstream file(outputfilename);//检测文件是否存在的 
 		if (file){
 			if (!override){
@@ -307,16 +316,19 @@ private:
 			}
 			}
 		file.close();//用完就丢2333
-		stream.open(outputfilename);
 		return true;
 	}
 	
 	//把修改好的行写入文本(全都重写一遍吧喂)
 	bool writeToFile(ofstream &stream){
-		if (stream) return false;
+		DEBUG_PRINT(filelines.size());
+		stream.open(outputfilename);
+		if (!stream) return false;
 		for (auto a = filelines.begin(); a != filelines.end(); ++a){
-			stream << *a << endl;
+			if(a != filelines.begin()) stream << endl;
+			stream << *a << flush;
 		}
+		DEBUG_PRINT("File Writed");
 		return true;
 	}
 
@@ -426,6 +438,9 @@ doline getTextLines(aline textline){
 			Text
 			Text
 			*/ 
+			//为啥会出现莫名其妙多两行的问题....
+			//这边一行解决掉了 
+			 
 			//先创建一下行
 			doline dl = getTextLines(txt);
 			if(dl.first <= flines){//防止new覆盖掉原有的行 
@@ -434,7 +449,7 @@ doline getTextLines(aline textline){
 			if(oneLine(dl)){
 				if(dl.first > flines + 1){
 					int opt = dl.first - flines;
-					for(;opt >=0;--opt){
+					for(;opt >0;--opt){
 						filelines.push_back("");
 					}
 				}
@@ -443,10 +458,11 @@ doline getTextLines(aline textline){
 			}
 			else{
 				int opt = dl.second - flines;
-				for(;opt >=0;--opt){
+				for(;opt >0;--opt){
 					filelines.push_back("");
 				}
 			}
+			flines = filelines.size();
 			DEBUG_PRINT("New line created");
 			DEBUG_PRINT(filelines.size());
 			return 2;
@@ -459,12 +475,12 @@ doline getTextLines(aline textline){
 			//Empty
 			doline lines = getTextLines(txt);
 			if(oneLine(lines)){
-				filelines[line-1] = ""; //单行就直接清空，多行底下搞定
+				filelines[lines.first - 1] = ""; //单行就直接清空，多行底下搞定
 				return 0;
 			}
 			for(int i = lines.first;i <= lines.second;++i)
 			{
-				filelines[i-1] = ""; //for循环解决掉 
+				filelines[i - 1] = ""; //for循环解决掉 
 			}
 			return 0;
 		}
@@ -520,7 +536,9 @@ doline getTextLines(aline textline){
 			return 1;
 		}
 		if(dl.first > flines || dl.second > flines){//假如设置的值过大以致于超过文件行数 
-			printError(li,"Line(s) is(are) not found!");
+			printError(li,"Line(s) not found!");
+			DEBUG_PRINT(dl.first);
+			DEBUG_PRINT(dl.second);
 			return 1;
 		}
 		if(oneLine(dl))
@@ -581,4 +599,12 @@ doline getTextLines(aline textline){
 		DEBUG_PRINT(line);
 		return vec;
 	}
+	
+	//以下是replace的代码by mkpoli
+	int replaceString(doline dl,text olds,text news);
+	/*
+	可能用到的变量或函数 
+	(vector<aline>)flines - 暂存文件修改数据的vector，行数i在其中对应关系为flines[i-1] 
+	getIt(vector<aline> vec,nums line) - 内联函数，获取某vector<aline>中某行对应的迭代器 
+    */
 };

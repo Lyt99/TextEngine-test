@@ -13,17 +13,22 @@ Visual Studio 2013太坑
 */ 
 int main(int argc, char *argv[])
 {
+	
 	//这段要重写
+	//Lyt99:懒得写了QAQ 
 		//脚本名，默认为 script.te
 		string filename = "script.te";
 		if (argc >= 2)
-			filename = argv[1];
+			filename = argv[1]; //文件名后的第一个参数可以配置 
 		else
 			cout << "Using default script file:" << filename << endl;
 		//创建textEngine类
 		textEngine te(filename);
-		te.setItDebug();
+		te.setDebug() //设置调试模式，不喜欢可以关掉 
 		te.init();
-		te.doIt();
+		if(te.doIt())
+			cout << "Succeed" << endl;
+		else
+			cout << "Failed" << endl;
 	return 0;
 }
