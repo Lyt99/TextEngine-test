@@ -32,3 +32,15 @@ int main(int argc, char *argv[])
 			cout << "Failed" << endl;
 	return 0;
 }
+
+/**
+ * 用这种注释格式是一个Java程序员的悲哀
+ * 好了，这个函数式用来替换制定行的文字的
+ *
+ */
+int replaceString(doline dl, text find, text replacement)
+{
+	// TODO: GET TEXT
+	// TODO: REPLACE
+	// TODO: RETURN TEXT
+}

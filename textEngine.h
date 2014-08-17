@@ -13,12 +13,17 @@ My First C++ Application
 目的是用来进行自动化的
 文本处理操作
 话说代码全写头文件里了没问题吧QAQ
+~ 有问题啊
 */
 
 
-/*
-@author Lyt99,mkpoli
-喂有这种写法么 
+/**
+ * @author Lyt99(*), mkpoli(~)
+ * 喂有这种写法么 
+ * 
+ ~ 好像没有
+ ~
+ ~ 还有，你tm就不能在标点符号后面加个空格么
 */
 
 using namespace std;
@@ -42,8 +47,9 @@ public:
 	*/
 
 	//DEBUG FUNCTION
+	// 用大写字母逼格高一点 - mkpoli
 	void setItDebug(){
-		printMessage("Debug mode on.");
+		printMessage("DEBUG MODE ON.");
 		debug = true;
 	}
 
@@ -51,6 +57,7 @@ public:
 	string static const getVersion(){
 		return "0.0.1";
 	}
+
 	//构造函数
 	textEngine(string sname) :scriptname(sname){}
 	//析构函数
@@ -60,16 +67,17 @@ public:
 		if (filestream)
 			filestream.close();
 	}
+
 	//除了构造时输入名称外，还可以由此设定打开文件(算了还是不用了会坑爹的)
 	//void setScriptName(string sname){ scriptname = sname; }
 	//初始化函数，在使用功能前必须要运行此函数
 	bool init(){
 		DEBUG_PRINT("init()" + scriptname);
-		if (scriptname.empty()) return false;
-		scriptstream.open(scriptname);//打开脚本文件
+		if (scriptname.empty()) return false; // 脚本文件名为空则不打开
+		scriptstream.open(scriptname); // 打开脚本文件
 		if (scriptstream){
-			slines = getAllScriptline();//读取全部脚本，返回一个行数 
-			if(!slines) {
+			slines = getAllScriptline(); // 读取全部脚本，返回一个行数 
+			if(!slines) { // 若脚本为空则打印错误
 				printError(0,"Script File's Empty!");
 				return false;
 			}
@@ -333,7 +341,7 @@ private:
 	}
 
 //最后一个坑了(大概)
-//返回doline(typedef pair(int,int) doline)
+//返回doline(	 pair(int,int) doline)
 //doline的用途是提供一个存有两个int的pair数据
 //用于表示行号参数的前值和末值
 //参数带入aline
@@ -397,14 +405,14 @@ doline getTextLines(aline textline){
 	//DEBUG MESSAGE 
 	inline void DEBUG_PRINT(string str){
 		if (debug){
-			cout << "DEBUG:" << str << endl;
+			cout << "[DEBUG] " << str << endl;
 		}
 	}
 	
 	//DEBUG MESSAGE PRINT INT
 	inline void DEBUG_PRINT(int i){ //+1重载 
 	if (debug){
-			cout << "DEBUG:" << i << endl;
+			cout << "[DEBUG] " << i << endl;
 		}
 	}
 	
