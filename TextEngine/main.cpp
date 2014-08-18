@@ -18,10 +18,10 @@ int main(int argc, char *argv[])
 		cout << "Lyt99's TextEngine\n"
 			 << "Author: Lyt99 & mkpoli\n"
 			 << "Version:" << textEngine::getVersion() <<"\n"
-			 << "Type " << argv[0] << " --help for more info" << endl;
+			 << "Type " << argv[0] << " -help for more info" << endl;
 			 return 0;
 	}
-	if(argc == 2 && static_cast<string>(argv[1]) == "--help"){ //static_cast黑科技 
+	if(argc == 2 && static_cast<string>(argv[1]) == "-help"){ //static_cast黑科技 
 		cout << "TextEngine's Help\n"
 			 << argv[0] << " <options> [arguments]\n"
 			 << "Options: -script -output -override\n"
@@ -83,8 +83,6 @@ int main(int argc, char *argv[])
 			cout << "Failed." << endl;
 }
 	else 
+		cout << "Failed." << endl;
 		return 0;
- 
-
-	return 0;
 }

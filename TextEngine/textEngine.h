@@ -120,9 +120,6 @@ public:
 			if (!canFileWritten()) return false;
 			DEBUG_PRINT("Setted File Written");
 			ifinit = true;//设置init为true，证明已经加载 
-			DEBUG_PRINT("init() return true");
-			DEBUG_PRINT(slines);
-			DEBUG_PRINT(flines);
 			return true;
 		}
 		printError(0, "Script " + scriptname + " not found.");
@@ -131,7 +128,7 @@ public:
 	
 	//正式执行函数了 
 	int doIt(){
-		printMessage("Start execute command.");
+		printMessage("Start executing commands.");
 		if(!ifinit){
 			printError(0,"The TextEngine haven't inited now!");//第一个参数为0就是不显示行号
 			return 1; 
@@ -266,7 +263,7 @@ private:
 			return it -> second; 
 	}
 	
-	//读取需要修改的文件,返回值0为读取成功，1为没有检测到File命令，2为打开文件失败
+	//读取需要修改的文件,返回值0为读取成功，1为没有检测到File命令，2为打开文件失败,3是modFile == scriptname了(用户你想闹哪样) <-虽然也不是不行 
 	int readModFile(){
 		aline File = getaline(scriptlines , 1);//拿到第一行
 		if (getCommand(File) != "File"){
@@ -275,6 +272,10 @@ private:
 		}
 		else{
 			modFile = getText(File,"File");
+			if(modFile == scriptname){
+				printError(1,"File can't be the script file!");
+				return 3;
+			}
 			filestream.open(modFile);
 			if (!filestream){
 				printError(1, "Couldn't open file " + modFile);
@@ -300,11 +301,10 @@ private:
 		return filelines.size();
 	}
 
-	//从vector中读取一行，line为读取的行数，默认为0，按顺序读取(读取记录保存在nums load里)
-	inline aline getaline(vector<aline> file,nums line = 0){
+	//从vector中读取一行，line为读取的行数，不用这个0了 
+	inline aline getaline(vector<aline> file,nums line){
 		if (!line)
-			//return file[load++];
-			return 0;//先不搞这个 
+			return 0;
 		else
 			return file[line - 1];
 	}
@@ -322,6 +322,10 @@ private:
 	inline text getText(aline a, command command){
 		return a.substr(command.size() + 1);
 	}
+	
+	inline text getText(aline a){//写个意义不明的重载 
+		return getText(a,getCommand(a));
+	}
 
 	//判断该行类型返回数值,0为一般命令行(hang),1为空白行,2为注释行(#开头)
 	//一般用法if(!getLineType(a)) 成立就是命令行 
@@ -338,6 +342,10 @@ private:
 	//设置文件可写，为改写文件做准备
 	//开始坑了 
 	bool canFileWritten(){
+		if(outputfilename == scriptname || outputfilename == modFile){
+			printError(1,"Output filename can't be " + outputfilename);
+			return false;
+		}//不能和原文件重复(任何一个) 
 		ifstream file(outputfilename);//检测文件是否存在的 
 		if (file){
 			if (!override){
@@ -406,8 +414,7 @@ doline getTextLines(aline textline){
 		rev = make_pair(a,a);
 		return rev;
 	}  
-	//各种打印信息的函数，果断inline内联节省资源 
-	
+
 	//程序向用户发送普通信息 
 	inline void printMessage(string message , bool prefix = true){
 		if(prefix)
