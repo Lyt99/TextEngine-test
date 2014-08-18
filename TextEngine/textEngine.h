@@ -60,6 +60,11 @@ public:
 	void setOverride(bool bo){
 		override = bo;
 	} 
+	
+	//设置输出文件
+	void setOutputFile(string str){
+		outputfilename = str;
+	} 
 	//获取当前textEngine的版本
 	string static const getVersion(){
 		return "0.0.1";
@@ -67,6 +72,7 @@ public:
 
 	//构造函数
 	textEngine(string sname) :scriptname(sname){}
+	textEngine() = default; //突然发现还真需要一个这个函数 
 	/*析构函数
 	*其实我一直想问这个析构函数没问题？
 	*/ 
@@ -76,7 +82,11 @@ public:
 		if (filestream)
 			filestream.close();
 	}
-
+	//设置文件名 
+	void setFilename(string file){
+		scriptname = file;
+	}
+	
 	//除了构造时输入名称外，还可以由此设定打开文件(算了还是不用了会坑爹的)
 	//void setScriptName(string sname){ scriptname = sname; }
 	//初始化函数，在使用功能前必须要运行此函数
@@ -92,16 +102,16 @@ public:
 				return false;
 			}
 			#pragma endregion
-			printMessage("Loaded scriptfile" + scriptname, false); //printMessage ><,false为不显示前缀TextEngine: (默认true)
+			printMessage("Loaded scriptfile: " + scriptname); 
 			if (readModFile()) //读取需要被修改的文件
 				return false;
-			printMessage("Loaded textfile: " + modFile , false);
+			printMessage("Loaded textfile: " + modFile);
 			flines = getAllFileLines();//和上面那个getAllScriptline()一样(别问我问啥单复数和大小写有问题) 
 			if(!flines){
 				printError(0,"File "+modFile+" is Empty!");
 				return false;
 			} 
-			printMessage("Using output file name:"+outputfilename,false);
+			printMessage("Using output file name:"+outputfilename);
 			DEBUG_PRINT("Loaded "+modFile);
 			DEBUG_PRINT("Load Commandlist");
 			defCommand();//添加命令列表到(map<string,int>)commandlist里 
@@ -121,6 +131,7 @@ public:
 	
 	//正式执行函数了 
 	int doIt(){
+		printMessage("Start execute command.");
 		if(!ifinit){
 			printError(0,"The TextEngine haven't inited now!");//第一个参数为0就是不显示行号
 			return 1; 
@@ -211,7 +222,7 @@ private:
 	ofstream outputstream;
 	string scriptname;//脚本名
 	string modFile;//需要修改的文件名
-	string outputfilename = "a.out";//输出文件名 
+	string outputfilename;//输出文件名 
 	bool ifinit = false;//是否加载成功
 	nums slines;//脚本行数 
 	nums flines;//文件行数 
@@ -340,6 +351,7 @@ private:
 	
 	//把修改好的行写入文本(全都重写一遍吧喂)
 	bool writeToFile(ofstream &stream){
+		printMessage("Start writing to file.");
 		DEBUG_PRINT(filelines.size());
 		stream.open(outputfilename);
 		if (!stream) return false;
