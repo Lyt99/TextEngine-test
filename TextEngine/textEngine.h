@@ -630,10 +630,27 @@ doline getTextLines(aline textline){
 		return vec;
 	}
 	
-	int replaceString(doline dl, text find, text replacement);
-	/*
-	*可能用到的变量或函数 
-	*(vector<aline>)flines - 暂存文件修改数据的vector，行数i在其中对应关系为flines[i-1] 
-	*getIt(vector<aline> vec,nums line) - 内联函数，获取某vector<aline>中某行对应的迭代器 
-    */
+	vector<aline> getVector(vector<aline> &filev, doline dl){
+	vector<aline> vec;
+		for(int a = dl.first;a <= dl.second;++a){
+			vec.push_back(filev[a - 1]);
+		}
+		return vec;
+	}
+	
+	//想了想还是搬回头文件了 
+	int replaceString(doline dl, text find, text replacement){
+		vector<aline> opt = getVector(filelines, dl);
+		vector<string::size_type> pos;
+		string::size_type tmpp;
+		for(auto a = opt.begin();a != opt.end();++a){
+			while(tmpp = a -> find(find) != string::npos){
+				pos.push_back(tmpp);
+			}
+			for(int b = 1;b <= pos.size();++b){
+				a -> replace(pos[b - 1],find.size(),replacement);
+			}
+		}
+		return 0;
+	}
 };
